@@ -1,10 +1,7 @@
 <?php
-  $title="Inicio";
-?>
-<?php require_once("./head.php") ?>
+ $title="Inicio";
+ require_once("./head.php") ?>
   <body>
-
-
     <div class="container">
 
           <?php include("./header.php") ?>

@@ -1,24 +1,63 @@
 <?php
 
 require_once("db.php");
+require_once("dbJSON.php");
+require_once("usuario.php");
 
 class dbMySQL extends db {
   private $conn;
 
   public function __construct() {
-    $dsn = "mysql:host=localhost;port=3306;dbname=test";
+    $dsn = "mysql:host=localhost;port=3306;dbname=newdb";
     $user = "root";
     $pass = "";
 
     $this->conn = new PDO($dsn, $user, $pass);
   }
-  public function crearTablaUsuarios(){
-  $sql = "CREATE TABLE IF NOT EXISTS 'usuarios' ( 'id' INT NULL DEFAULT NULL AUTO_INCREMENT , 'nombre' VARCHAR(30) NOT NULL , 'email' VARCHAR(50) NOT NULL , 'password' VARCHAR(1000) NOT NULL , 'edad' INT(100) NOT NULL , 'pais' VARCHAR(100) NOT NULL , PRIMARY KEY ('id'), UNIQUE ('email'), UNIQUE ('password')) ENGINE = InnoDB;)";
+  public function crearDB(){
 
-         $query = $this->conn->prepare($sql);
-          $query->execute();
+  try {
+    $sql = "CREATE DATABASE newdb";
+      $query = $this->conn->prepare($sql);
+      $query->execute(array($sql));
+        echo "Database created successfully<br>";
+      }
+      catch(PDOException $e){
+        echo $sql . "<br>" . $e->getMessage();
+      }
+
+  }
+
+    public function crearTabla() {
+
+      try {
+        $sql = "CREATE TABLE usuarios (
+          id INT(6)  AUTO_INCREMENT PRIMARY KEY,
+          nombre VARCHAR(30) NOT NULL,
+          edad INT(3) NOT NULL,
+          pais VARCHAR(10) NOT NULL,
+          email VARCHAR(50) NOT NULL,
+          password VARCHAR(500) NOT NULL,
+          reg_date TIMESTAMP
+        )";
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+      } catch (Exception $e) {
+        echo $sql . "<br>" . $e->getMessage();
+      }
+
+
     }
-
+  public function migrarJSONaMySQL() {
+    $json = new dbJSON();
+    $us=new Usuario();
+    $json->traerTodosLosUsuarios();
+    foreach ($usuarios as $usuario) {
+      $usuario = $us->toArray();
+      $usuario1 = new Usuario($usuario["nombre"], $usuario["email"], $usuario["password"], $usuario["edad"], $usuario["pais"], $usuario["id"]);
+      guardarUsuario($usuario1);
+    }
+}
 
   public function traerPorEmail($email) {
     $sql = "Select * from usuarios where email = :email";
