@@ -1,8 +1,9 @@
 <?php
-$title= "Entrada";
- require_once("head.php") ?>
+$title= "Entrada"; ?>
 <body>
+<?php
 
+  ?>
 <div class="entrada">
 <a href="crearDB.php">
   <h4>Crear Base de datos</h4>
@@ -14,7 +15,7 @@ $title= "Entrada";
 </a>
 </div>
 <div class="entrada">
-<a href="crearDB.php">
+<a href="migrar.php">
   <h4>Migrar Usuarios</h4>
 </a>
 </div>

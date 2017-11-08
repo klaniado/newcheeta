@@ -8,11 +8,15 @@ class dbMySQL extends db {
   private $conn;
 
   public function __construct() {
-    $dsn = "mysql:host=localhost;port=3306;dbname=newdb";
+    $dsn = "mysql:host=localhost;port=3306; dbname=newdb";
     $user = "root";
     $pass = "";
+    try {
+      $this->conn = new PDO($dsn, $user, $pass);
+    } catch (Exception $e) {
+      header("location: entrada.php");
+    }
 
-    $this->conn = new PDO($dsn, $user, $pass);
   }
   public function crearDB(){
 
@@ -31,7 +35,7 @@ class dbMySQL extends db {
     public function crearTabla() {
 
       try {
-        $sql = "CREATE TABLE usuarios (
+        $sql = "CREATE TABLE newdb.usuarios (
           id INT(6)  AUTO_INCREMENT PRIMARY KEY,
           nombre VARCHAR(30) NOT NULL,
           edad INT(3) NOT NULL,
@@ -50,12 +54,18 @@ class dbMySQL extends db {
     }
   public function migrarJSONaMySQL() {
     $json = new dbJSON();
-    $us=new Usuario();
-    $json->traerTodosLosUsuarios();
+    //$us=new Usuario();
+    $usuarios = $json->traerTodosLosUsuarios();
+
     foreach ($usuarios as $usuario) {
-      $usuario = $us->toArray();
-      $usuario1 = new Usuario($usuario["nombre"], $usuario["email"], $usuario["password"], $usuario["edad"], $usuario["pais"], $usuario["id"]);
-      guardarUsuario($usuario1);
+      //$usuario = $us->toArray();
+
+      //var_dump($usuario); exit;
+      $usuario1 = new Usuario($usuario->getNombre(), $usuario->getEmail(), $usuario->getPassword(), $usuario->getEdad(), $usuario->getPais(), $usuario->getId());
+
+      // echo "<pre>";
+      // var_dump($usuario1); exit;
+      $this->guardarUsuario($usuario1);
     }
 }
 
@@ -94,21 +104,22 @@ class dbMySQL extends db {
     return $arrayDeObjetos;
   }
   public function guardarUsuario(Usuario $usuario) {
-    $sql = "Insert into usuarios values(default, :nombre, :email, :password, :edad, :pais)";
+    $sql = "insert into newdb.usuarios values(default, :nombre, :edad, :pais, :email, :password, :reg_date)";
 
     $query = $this->conn->prepare($sql);
 
     $query->bindValue(":nombre",$usuario->getNombre());
-    $query->bindValue(":email",$usuario->getEmail());
-    $query->bindValue(":password",$usuario->getPassword());
     $query->bindValue(":edad",$usuario->getEdad());
     $query->bindValue(":pais",$usuario->getPais());
+    $query->bindValue(":email",$usuario->getEmail());
+    $query->bindValue(":password",$usuario->getPassword());
+    $query->bindValue(":reg_date", null);
 
     $query->execute();
 
     $usuario->setId($this->conn->lastInsertId());
 
-    return $usuario;
+    //return $usuario;
   }
 
   public function buscarUsuarios($buscar) {
