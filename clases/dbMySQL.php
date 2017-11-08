@@ -8,7 +8,7 @@ class dbMySQL extends db {
   private $conn;
 
   public function __construct() {
-    $dsn = "mysql:host=localhost;port=3306; dbname=newdb";
+    $dsn = "mysql:host=localhost;port=3306;";
     $user = "root";
     $pass = "";
     try {
@@ -23,7 +23,7 @@ class dbMySQL extends db {
   try {
     $sql = "CREATE DATABASE newdb";
       $query = $this->conn->prepare($sql);
-      $query->execute(array($sql));
+      $query->execute();
         echo "Database created successfully<br>";
       }
       catch(PDOException $e){
@@ -70,7 +70,7 @@ class dbMySQL extends db {
 }
 
   public function traerPorEmail($email) {
-    $sql = "Select * from usuarios where email = :email";
+    $sql = "Select * from newdb.usuarios where email = :email";
 
     $query = $this->conn->prepare($sql);
 
@@ -87,7 +87,7 @@ class dbMySQL extends db {
     return new Usuario($array["nombre"], $array["email"], $array["password"], $array["edad"], $array["pais"], $array["id"]);
   }
   public function traerTodosLosUsuarios() {
-    $sql = "Select * from usuarios";
+    $sql = "Select * from newdb.usuarios";
 
     $query = $this->conn->prepare($sql);
 
