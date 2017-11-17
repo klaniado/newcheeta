@@ -43,9 +43,7 @@ class Validator {
 			$arrayDeErrores["password"] = "Las contraseñas no verifican";
 		}
 
-		if (isset($_POST["terminos"]) == false) {
-			$arrayDeErrores["terminos"] = "Ey! Acepta los terminos";
-		}
+
 
 		return $arrayDeErrores;
 	}

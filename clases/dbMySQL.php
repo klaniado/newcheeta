@@ -8,7 +8,7 @@ class dbMySQL extends db {
   private $conn;
 
   public function __construct() {
-    $dsn = "mysql:host=localhost;port=3306;";
+    $dsn = "mysql:host=localhost; port=3306; dbname=newdb;";
     $user = "root";
     $pass = "";
     try {
@@ -19,12 +19,15 @@ class dbMySQL extends db {
 
   }
   public function crearDB(){
-
+    $dsn = "mysql:host=localhost; port=3306;";
+    $user = "root";
+    $pass = "";
   try {
-    $sql = "CREATE DATABASE newdb";
+      $this->conn = new PDO($dsn, $user, $pass);
+      $sql = "CREATE DATABASE newdb";
       $query = $this->conn->prepare($sql);
       $query->execute();
-        echo "Database created successfully<br>";
+      echo "Database created successfully<br>";
       }
       catch(PDOException $e){
         echo $sql . "<br>" . $e->getMessage();
@@ -33,9 +36,12 @@ class dbMySQL extends db {
   }
 
     public function crearTabla() {
-
+      $dsn = "mysql:host=localhost; port=3306; dbname=newdb";
+      $user = "root";
+      $pass = "";
       try {
-        $sql = "CREATE TABLE newdb.usuarios (
+        $this->conn = new PDO($dsn, $user, $pass);
+        $sql = "CREATE TABLE usuarios (
           id INT(6)  AUTO_INCREMENT PRIMARY KEY,
           nombre VARCHAR(30) NOT NULL,
           edad INT(3) NOT NULL,
@@ -104,6 +110,15 @@ class dbMySQL extends db {
     return $arrayDeObjetos;
   }
   public function guardarUsuario(Usuario $usuario) {
+    $dsn = "mysql:host=localhost; port=3306; dbname=newdb";
+    $user = "root";
+    $pass = "";
+    try {
+      $this->conn = new PDO($dsn, $user, $pass);
+    } catch (Exception $e) {
+
+    }
+
     $sql = "insert into newdb.usuarios values(default, :nombre, :edad, :pais, :email, :password, :reg_date)";
 
     $query = $this->conn->prepare($sql);

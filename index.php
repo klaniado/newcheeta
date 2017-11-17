@@ -1,6 +1,7 @@
 <?php
  $title="Inicio";
  require_once("./head.php") ?>
+ 
   <body>
     <div class="container">
 
